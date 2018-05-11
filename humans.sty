@@ -1,0 +1,23 @@
+\ProvidesPackage{humans}[2016/12/13 v.01]
+%%%%%%%%%%%%%%%%%%%%
+%% 1: type, 2: pad, 3: surname, 4: initials, 5: full
+%% 1: author
+%% 2: nom-inative
+\newcommand*{\BAKhuman}[6]{%
+  \expandafter\gdef\csname @BAK#1#2Surname\endcsname{#3}%
+  \expandafter\gdef\csname @BAK#1#2Short\endcsname{#4}%
+  \expandafter\gdef\csname @BAK#1#2Full\endcsname{#5}%
+  \expandafter\gdef\csname @BAK#1Regals\endcsname{#6}}
+
+%%%%%%%%%%%%%%%%%%%%
+%% 1: type 2: pad 3: variation
+%% variationo: short-pre, short-post, full-pre, full-post, regals
+\newcommand*{\BAKprintHuman}[3]{%
+  \IfEqCase{#3}{%
+    {short-pre}{\csname @BAK#1#2Short\endcsname~\csname @BAK#1#2Surname\endcsname}%
+    {short-post}{\csname @BAK#1#2Surname\endcsname~\csname @BAK#1#2Short\endcsname}%
+    {regals}{\csname @BAK#1Regals\endcsname}%
+    {surname}{\csname @BAK#1#2Surname\endcsname}%
+    {full-post}{\csname @BAK#1#2Surname\endcsname~\csname @BAK#1#2Full\endcsname}%
+  }%
+}

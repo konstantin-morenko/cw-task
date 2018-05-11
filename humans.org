@@ -1,0 +1,26 @@
+#+PROPERTY: :tangle humans-org.sty
+
+#+BEGIN_SRC latex :tangle humans-org.sty
+  \ProvidesPackage{humans-org}[2018/05/11 v.0.1.0]
+#+END_SRC
+
+Naming (variable for Value):
+1. Prefix (Humans)
+2. Person (like ~author~, ~adviser~ etc.)
+3. Case (~nom~, ~gen~)
+4. Part:
+   - surname :: Surname (Lastname)
+   - initials :: Initials
+   - firstname :: Firstname (Name)
+   - regals :: Regals
+
+Commands:
+- SetHuman
+- PrintHuman
+
+Printing variants:
+- initials-before
+- initials-after
+- regals
+- surname
+- firstname-after
