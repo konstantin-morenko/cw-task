@@ -1,6 +1,8 @@
 \documentclass[russian,utf8,columnviii,nocolumnsxix]{eskdtext}
 \usepackage[T2A]{fontenc}
 \usepackage{etoolbox}
+\usepackage{geometry}
+
 \newcommand{\fordate}{%
   <<\underline{\hspace{1cm}}>> \underline{\hspace{3cm}} 20\underline{\hspace{1cm}} г.%
 }
@@ -10,30 +12,41 @@
 }
 %% \usepackage{setspace}
 %% \setstretch{1.65}
-\usepackage{title-bakalavr}
+\usepackage{course-work-task}
 \DeclareRobustCommand{\No}{\ifmmode{\nfss@text{\textnumero}}\else\textnumero\fi}
 
-\ChairHeaderName{ФЕДЕРАЛЬНОЕ АГЕНТСТВО НАУЧНЫХ ОРГАНИЗАЦИЙ \\
-ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ НАУЧНОЕ УЧРЕЖДЕНИЕ \\
-«ФЕДЕРАЛЬНЫЙ НАУЧНЫЙ АГРОИНЖЕНЕРНЫЙ ЦЕНТР ВИМ» \\
-(ФГБНУ ФНАЦ ВИМ)}
+\CourseWorkTaskChairName{Общенаучных и специальных дисциплин}
+\CourseWorkTaskCourseName{Стратегии коммерциализации инноваций}
 
-\ChairName{Общенаучных и специальных дисциплин}
+\CourseWorkTaskAdviser{К. С. Моренко}
 
-\BAKhuman{adviser}{nom}{Моренко}{К. C.}{}{}
+\CourseWorkDeadLine{25}{мая}{18}
 
-\ChairWorkDeadLine{20}{мая}{18}
-
-\ChairTaskCourseWorkData{образовательные и научные книги и статьи по
-  теме курсовой работы, материалы сети Интернет}
+\ChairTaskCourseWorkData{учебники, учебные пособия, научные книги и
+  статьи по теме курсовой работы, материалы сети Интернет}
 
 \ChairWorkSigned{15}{февраля}{18}
 
 \begin{document}
 
-\BAKhuman{author}{gen}{Захарова}{}{Юрия Юрьевича}{}
+\ESKDstyle{empty}
 
-\BAKhuman{author}{nom}{Захаров}{Ю. Ю.}{}{}
+\newgeometry{left=3cm, right=1.5cm, top=1cm, bottom=1cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Common
+
+\CourseWorkTaskHeader{\small ФЕДЕРАЛЬНОЕ АГЕНТСТВО НАУЧНЫХ ОРГАНИЗАЦИЙ \\
+ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ НАУЧНОЕ УЧРЕЖДЕНИЕ \\
+«ФЕДЕРАЛЬНЫЙ НАУЧНЫЙ АГРОИНЖЕНЕРНЫЙ ЦЕНТР ВИМ» \\
+(ФГБНУ ФНАЦ ВИМ)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Захаров
+
+\CourseWorkTaskAuthor{Ю. Ю. Захаров}{Захарова Юрия Юрьевича}
+
+%% \BAKhuman{author}{nom}{Захаров}{Ю. Ю.}{}{}
 
 \ChairTaskCourseWorkTitle{Основы организации производства инновационной продукции}
 
@@ -41,6 +54,20 @@
   инновационной стратегии.  3. Технико-экономическая оценка
   выпускаемой продукции}
 
-\ChairMakeTaskCourseWork
+\CourseWorkTaskMake
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Баранов
+
+\CourseWorkTaskAuthor{А. Ю. Баранов}{Баранова Алексея Юрьевича}
+
+\ChairTaskCourseWorkTitle{Технико-экономический расчет производства
+  блока бесперебойного питания}
+
+\ChairTaskCourseWorkContent{1. Оценка рынка.  2. Оборудование,
+  материалы и персонал для производства.  3. Технико-экономическая
+  оценка продукции}
+
+\CourseWorkTaskMake
 
 \end{document}

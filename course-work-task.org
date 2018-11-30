@@ -1,0 +1,286 @@
+#+PROPERTY: :tangle course-work-task.sty
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+  \ProvidesPackage{course-work-task}[2018/05/11 v.0.1.0]
+  \RequirePackage{soul}
+  \RequirePackage{enumerate}
+#+END_SRC
+
+%%\newcommand{\interskip}{\vskip 0.5cm plus 1cm minus 0.5cm}
+
+Define header for task:
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand{\CourseWorkTaskHeader}[1]{%
+  \gdef\@CourseWorkTaskHeader{#1}%
+}
+\CourseWorkTaskHeader{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand{\ChairTaskCourseWorkTitle}[1]{%
+  \gdef\@ChairTaskCourseWorkTitle{#1}%
+}
+\ChairTaskCourseWorkTitle{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand{\ChairTaskCourseWorkData}[1]{%
+  \gdef\@ChairTaskCourseWorkData{#1}%
+}
+\ChairTaskCourseWorkData{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+  \newcommand{\CourseWorkTaskAuthor}[2]{%
+    \gdef\@CourseWorkTaskAuthorNomShortpre{#1}%
+    \gdef\@CourseWorkTaskAuthorGenFull{#2}%
+  }
+  \CourseWorkTaskHeader{}{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+  \newcommand{\CourseWorkTaskAdviser}[1]{%
+    \gdef\@CourseWorkTaskAdviserNomShortpre{#1}%
+  }
+  \CourseWorkTaskAdviser{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand{\CourseWorkTaskChairName}[1]{%
+  \gdef\@CourseWorkTaskChairName{#1}%
+}
+\CourseWorkTaskChairName{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand{\CourseWorkTaskCourseName}[1]{%
+  \gdef\@CourseWorkTaskCourseName{#1}%
+}
+\CourseWorkTaskCourseName{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand{\ChairWorkSigned}[3]{%
+  \gdef\@ChairWorkSignedDay{#1}%
+  \gdef\@ChairWorkSignedMonth{#2}%
+  \gdef\@ChairWorkSignedYear{#3}%
+}
+\ChairWorkSigned{}{}{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+  \newcommand{\CourseWorkDeadLine}[3]{%
+    \gdef\@CourseWorkDeadLineDay{#1}%
+    \gdef\@CourseWorkDeadLineMonth{#2}%
+    \gdef\@CourseWorkDeadLineYear{#3}%
+  }
+  \CourseWorkDeadLine{}{}{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand{\ChairTaskCourseWorkContent}[1]{%
+  \gdef\@ChairTaskCourseWorkContent{#1}%
+}
+\ChairTaskCourseWorkContent{}
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+\newcommand*{\fordateq}[4]{%
+  \notblank{#1}{\parbox[b]{0.3\textwidth}{#1}}{}%
+  <<\notblank{#2}{\sl{#2}}{\underline{\hspace{1cm}}}>> %
+  \notblank{#3}{\sl{#3}}{\underline{\hspace{3cm}}} %
+  20{\notblank{#4}{\sl{#4}}{\underline{\hspace{1cm}}}}~г.%
+}
+#+END_SRC
+
+NOEXPORT
+#+BEGIN_SRC latex :tangle course-work-task.sty
+  \newlength{\CourseWorkTaskListwidth}
+
+  \newenvironment{CourseWorkTaskListExplanation}[1][40mm]{%
+    \setlength{\CourseWorkTaskListwidth}{#1}
+    \let\olditem\item%
+    \renewcommand{\item}[1]{%
+      \olditem %
+        % \parbox[t][][t]{\CourseWorkTaskListwidth}{##1}%
+        \makebox[\CourseWorkTaskListwidth][l]{##1}%
+        \ignorespaces%
+    }%
+    \begin{list}{}{%
+    \setlength{\parsep}{0pt}%
+    \setlength{\topsep}{0pt}%
+    \setlength{\itemsep}{3mm}%
+    \setlength{\labelsep}{0pt}%
+    \setlength{\labelwidth}{#1}%
+    \setlength{\leftmargin}{\CourseWorkTaskListwidth}%
+    \setlength{\itemindent}{-\CourseWorkTaskListwidth}}}{%
+    \end{list}
+  }
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-work-task.sty
+  \newenvironment{CourseWorkTaskPoints}{%
+    \newcommand{\CourseWorkTaskPoint}[2]{%
+      \item
+        \noindent ##1 {\textsl{##2}} 
+    }%
+    \begin{enumerate}[1.]{%
+    \setlength{\parsep}{0pt}%
+    \setlength{\topsep}{0pt}%
+    \setlength{\itemsep}{3mm plus 3mm minus 1mm}%
+    \setlength{\labelsep}{0pt}%
+    \setlength{\labelwidth}{0pt}%
+    \setlength{\leftmargin}{0pt}%
+    \setlength{\itemindent}{0pt}}}{%
+    \end{enumerate}
+  }
+#+END_SRC
+
+#+BEGIN_SRC latex
+\newcommand{\ChairFillingParagraph}[2]{
+  \noindent #1 {\ul{#2}\ul{\hfill}}
+}
+#+END_SRC
+
+Task definition:
+#+BEGIN_SRC latex :tangle course-work-task.sty
+    \newcommand{\CourseWorkTaskMake}{
+
+      \begin{center}
+        \@CourseWorkTaskHeader
+      \end{center}
+
+      \begin{CourseWorkTaskListExplanation}[30mm]
+      \item{Кафедра:} \@CourseWorkTaskChairName
+      \item{Дисциплина:} \@CourseWorkTaskCourseName
+      \end{CourseWorkTaskListExplanation}
+
+      \begin{center}
+        ЗАДАНИЕ НА КУРСОВУЮ РАБОТУ \\
+        \sl{\@CourseWorkTaskAuthorGenFull}
+      \end{center}
+
+      %% \interskip
+
+      \begin{CourseWorkTaskPoints}
+
+        \CourseWorkTaskPoint{Тема работы:}{<<\@ChairTaskCourseWorkTitle>>}
+
+        \CourseWorkTaskPoint{Срок сдачи студентом завершённой работы}{
+          \fordateq{}{\@CourseWorkDeadLineDay}{\@CourseWorkDeadLineMonth}{\@CourseWorkDeadLineYear}}
+
+        \CourseWorkTaskPoint{Необходимые данные для выполнения работы:}{\@ChairTaskCourseWorkData}
+
+        \CourseWorkTaskPoint{Содержание расчетно-пояснительной записки (перечень вопросов для разработки):}{\@ChairTaskCourseWorkContent}
+
+        \CourseWorkTaskPoint{Задание выдано}{\fordateq{}{\@ChairWorkSignedDay}{\@ChairWorkSignedMonth}{\@ChairWorkSignedYear}}
+
+      \end{CourseWorkTaskPoints}
+
+      {\noindent
+        \begin{center}
+          \begin{tabular}{l c l}
+            Руководитель & \underline{\hspace{3cm}} &  \@CourseWorkTaskAdviserNomShortpre \\
+            Задание принял к исполнению & \underline{\hspace{3cm}} & \@CourseWorkTaskAuthorNomShortpre \\
+          \end{tabular}
+        \end{center}}
+      %% \interskip
+
+
+      %% %% \ChairFillingParagraph{5. Содержание графического материала (блок-схемы, чертежи, графики, диаграммы):}{\@ChairTaskCourseWorkContent}
+
+      %% \interskip
+
+      %% 5. Дата выдачи задания
+      %% %% <<\@BAKworkDeadlineDay>> \@BAKworkDeadlineMonth{} 20\@BAKworkDeadlineYear{} г.
+      %% 
+
+      %% \interskip
+
+
+      %% \vskip 0pt plus 1fil
+
+      %% %% 4. Содержание расчётно-пояснительной записки (перечень вопросов, подлежащих разработке):
+      %% %% \begin{enumerate}[label=\arabic*)]
+      %% %% \item \@BAKcalendarIName
+      %% %% \item \@BAKcalendarIIName
+      %% %% \item \@BAKcalendarIIIName
+      %% %% \item \@BAKcalendarIVName
+      %% %% \end{enumerate}
+      %% %% \vfill
+
+      %% %% 5. Перечень графического материала (с точным указанием обязательных чертежей):
+      %% %% \begin{enumerate}[label=\arabic*)]
+      %% %% \item \BAKsheetNameFull{I}
+      %% %% \item \BAKsheetNameFull{II}
+      %% %% \item \BAKsheetNameFull{III}
+      %% %% \item \BAKsheetNameFull{IV}
+      %% %% %%\item пятый чертёж
+      %% %% %%\item шестой чертёж
+      %% %% %%\item экономическое обоснование
+      %% %% \end{enumerate}
+      %% %% \vfill
+
+      %% %% 6. Консультанты по работе
+
+      %% %%   \begin{tabular}{ |l|c|c|c| }
+      %% %%   \hline
+      %% %%   & & \multicolumn{2}{ c| }{Подпись, дата} \\
+      %% %%   \cline{3-4}
+      %% %%   Раздел & Консультант & \multicolumn{2}{ c| }{Задание} \\
+      %% %%   \cline{3-4}
+      %% %%   & & \parbox[c][][t]{4cm}{\center{выдал}} &
+      %% %%   \parbox[c][][t]{4cm}{\center{принял}} \\
+      %% %%   \hline
+      %% %%   Основная часть & \BAKprintHuman{adviser}{nom}{short-post} & & \\
+      %% %%   \hline
+      %% %%   %% БЖД & Кто-то & & \\
+      %% %%   %% \hline
+      %% %%   Экономика & \BAKprintHuman{economist}{nom}{short-post} & & \\
+      %% %%   \hline
+      %% %%   \end{tabular}
+      %% %% \vfill
+
+      %% %% 7. Календарный план выполнения выпускной квалификационной работы
+
+      %% %%   \begin{tabular}{| l | c | c | c |}
+      %% %%   \hline
+      %% %%   \parbox[t][][t]{6cm}{Наименование этапов выпускной квалификационной работы} &
+      %% %%   \parbox[t][][t]{2cm}{Объём раздела} &
+      %% %%   \parbox[t][][t]{3cm}{Сроки \\выполнения} &
+      %% %%   \parbox[t][][t]{3cm}{Отметка о выполнении} \\
+      %% %%   \hline
+      %% %%   \@BAKcalendarIName & \@BAKcalendarIValue & \@BAKcalendarIDate & \\
+      %% %%   \hline
+      %% %%   \@BAKcalendarIIName & \@BAKcalendarIIValue & \@BAKcalendarIIDate & \\
+      %% %%   \hline
+      %% %%   \@BAKcalendarIIIName & \@BAKcalendarIIIValue & \@BAKcalendarIIIDate & \\
+      %% %%   \hline
+      %% %%   \@BAKcalendarIVName & \@BAKcalendarIVValue & \@BAKcalendarIVDate & \\
+      %% %%   \hline
+      %% %%   \end{tabular}
+
+      %% %% \vfill
+
+      %% %% \fordateq{Дата выдачи задания}
+      %% %%          {\BAKprintDate{taskissued}{day}}
+      %% %%          {\BAKprintDate{taskissued}{month}}
+      %% %%          {\BAKprintDate{taskissued}{year}}
+
+      %% %% \signature{Руководитель}{\BAKprintHuman{adviser}{nom}{short-pre}}
+
+      %% %% \vspace{3mm}
+      %% %% \fordateq{Задание принято к исполнению}
+      %% %%          {\BAKprintDate{taskreceived}{day}}
+      %% %%          {\BAKprintDate{taskreceived}{month}}
+      %% %%          {\BAKprintDate{taskreceived}{year}}
+
+      %% %% \signature{Подпись студента}{~}
+      %% %%}
+      \vfil
+      \newpage
+      }
+
+      \endinput
+
+#+END_SRC
