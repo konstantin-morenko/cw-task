@@ -1,0 +1,267 @@
+* Новая версия
+  :PROPERTIES:
+  :header-args:latex: :tangle course-task.sty
+  :END:
+
+- [ ] разделить пакет на файлы:
+  - главный файл ~course-task.sty~
+  - команды ~commands.sty~
+  - окружение ~environment.sty~
+  - вспомогательные команды ~?.sty~
+
+** Наименование пакета
+
+#+BEGIN_SRC latex :tangle course-task.sty
+  \ProvidesPackage{course-task}[2018/11/30 v.2.0.0]
+  \RequirePackage{soul}
+  \RequirePackage{enumerate}
+  \RequirePackage{etoolbox}
+#+END_SRC
+
+** Параметры и команды
+
+- Индивидуальные параметры
+  - Фамилия, имя, отчество студента
+    - [X] команда в окружении: ~\author{sign}{full-gen}~
+    - [X] параметры в окружении: ~\@authorsign~, ~\@authorfull~
+  - Тема работы
+    - [X] команда в окружении: ~\title{title}~
+    - [X] параметр в окружении: ~\@title~
+  - Содержание работы (обязательные вопросы)
+    - команда в окружении: ~\content{questions}~
+    - параметр в окружении: ~\@content~
+- Общие параметры
+  - Заголовок
+    - [X] общий параметр ~\@CWheader~
+      #+BEGIN_SRC latex :tangle course-task.sty
+        \newcommand{\@CWheader}{CWheader}%
+      #+END_SRC
+    - [X] общая команда ~\CWheader{header}~
+      #+BEGIN_SRC latex :tangle course-task.sty
+        \newcommand{\CWheader}[1]{%
+          \renewcommand{\@CWheader}{#1}%
+        }
+      #+END_SRC
+  - Название кафедры ~\CWchair{chair}~
+  - Название дисциплины ~\CWcourse{course}~
+  - Срок сдачи ~\CWenddate{date}~
+- Переопределяемые параметры
+  - Данные для выполнения работы
+    - [X] общий параметр: ~\CW@materials~
+      #+BEGIN_SRC latex :tangle course-task.sty
+        \newcommand{\@CWmaterials}{CWmaterials}
+      #+END_SRC
+    - [X] общая команда: ~\CWmaterials{materials}~
+      #+BEGIN_SRC latex :tangle course-task.sty
+        \newcommand{\CWmaterials}[1]{%
+          \renewcommand{\@CWmaterials}{#1}%
+        }
+      #+END_SRC
+    - [X] команда в окружении: ~\materials{materials}~
+    - [X] параметр в окружении: ~\@materials~
+  - Дата выдачи ~\CWissdate{date}~, ~\issdate{date}~
+    - даты в окружении: ~\@issdateday~, ~\@issdatemonth~,
+      ~\@issdateyear~
+    - общие даты: ~\@CWissdateday~, ~\@CWissdatemonth~,
+      ~\@CWissdateyear~
+    - общая команда:
+      #+BEGIN_SRC latex :tangle course-task.sty
+        \newcommand{\CWissdate}[3]{
+          \gdef\@CWissdateday{##1}
+          \gdef\@CWissdatemonth{##2}
+          \gdef\@CWissdateyear{##3}
+        }
+        \gdef\@CWissdateday{}
+        \gdef\@CWissdatemonth{}
+        \gdef\@CWissdateyear{}
+      #+END_SRC
+  - Фамилия, имя, отчество руководителя ~\CWadviser{surname}{initials}~, ~\adviser{surname}{initials}~
+
+Параметры имеют три уровня значений (по возрастанию приоритетов):
+- значение по умолчанию
+- общее значение
+- значение в окружении
+
+Пункты задания состоят из двух частей, причем вторая часть выводится
+курсивом
+#+BEGIN_SRC latex :tangle course-task.sty
+  \newenvironment{@points}{%
+    \newcommand{\@point}[2]{%
+      \item
+        \noindent ##1 {\textsl{##2}} 
+    }%
+    \begin{enumerate}[1.]{%
+    \setlength{\parsep}{0pt}%
+    \setlength{\topsep}{0pt}%
+    \setlength{\itemsep}{3mm plus 3mm minus 1mm}%
+    \setlength{\labelsep}{0pt}%
+    \setlength{\labelwidth}{0pt}%
+    \setlength{\leftmargin}{0pt}%
+    \setlength{\itemindent}{0pt}}}{%
+    \end{enumerate}
+  }
+#+END_SRC
+
+#+BEGIN_SRC latex :tangle course-task.sty
+  \newenvironment{CWtask}{
+
+    \renewcommand{\author}[2]{
+      \gdef\@authorsign{##1}
+      \gdef\@authorfull{##2}
+    }
+
+    \renewcommand{\title}[1]{
+      \gdef\@title{##1}
+    }
+    \let\oldmaterials\materials
+
+    \newcommand{\materials}[1]{
+      \gdef\@materials{##1}
+    }
+    \gdef\@materials{\@CWmaterials}
+
+    \newcommand{\issdate}[3]{
+      \gdef\@issdateday{##1}
+      \gdef\@issdatemonth{##2}
+      \gdef\@issdateyear{##3}
+    }
+    \gdef\@issdateday{\@CWissdateday}
+    \gdef\@issdatemonth{\@CWissdatemonth}
+    \gdef\@issdateyear{\@CWissdateyear}
+
+  }{
+
+    \begin{center}
+      \small \@CWheader
+    \end{center}
+
+    % \begin{CourseWorkTaskListExplanation}[30mm]
+    % \item{Кафедра:} \@CourseWorkTaskChairName
+    % \item{Дисциплина:} \@CourseWorkTaskCourseName
+    % \end{CourseWorkTaskListExplanation}
+
+    \begin{center}
+      ЗАДАНИЕ НА КУРСОВУЮ РАБОТУ \\
+      \sl{\@authorfull}
+    \end{center}
+
+    % %% \interskip
+
+    \begin{@points}
+
+      \@point{Тема работы:}{<<\@title>>}
+      % Тема работы: <<\@title>>
+
+    %   \CourseWorkTaskPoint{Срок сдачи студентом завершённой работы}{
+    %     \fordateq{}{\@CourseWorkDeadLineDay}{\@CourseWorkDeadLineMonth}{\@CourseWorkDeadLineYear}}
+
+      \@point{Материалы для выполнения работы:}{\@materials}
+
+    %   \CourseWorkTaskPoint{Содержание расчетно-пояснительной записки (перечень вопросов для разработки):}{\@ChairTaskCourseWorkContent}
+
+    %   \CourseWorkTaskPoint{Задание выдано}{\fordateq{}{\@ChairWorkSignedDay}{\@ChairWorkSignedMonth}{\@ChairWorkSignedYear}}
+
+    \end{@points}
+
+    % {\noindent
+    %   \begin{center}
+    %     \begin{tabular}{l c l}
+    %       Руководитель & \underline{\hspace{3cm}} &  \@CourseWorkTaskAdviserNomShortpre \\
+    %       Задание принял к исполнению & \underline{\hspace{3cm}} & \@CourseWorkTaskAuthorNomShortpre \\
+    %     \end{tabular}
+    %   \end{center}}
+    % \vfil
+    \newpage
+
+  }
+#+END_SRC
+
+** Тестирование
+
+#+BEGIN_SRC latex :tangle test-course-task.tex
+  \documentclass[russian,utf8,columnviii,nocolumnsxix]{eskdtext}
+  \usepackage[T2A]{fontenc}
+  \usepackage{etoolbox}
+  \usepackage{geometry}
+
+  % \newcommand{\fordate}{%
+  %   <<\underline{\hspace{1cm}}>> \underline{\hspace{3cm}} 20\underline{\hspace{1cm}} г.%
+  % }
+  % \newcommand{\fordatef}[1][]{%
+  %   \notblank{#1}{\parbox[b]{0.3\textwidth}{#1}}{}%
+  %   \fordate%
+  % }
+  %% \usepackage{setspace}
+  %% \setstretch{1.65}
+  \usepackage{course-task}
+  \DeclareRobustCommand{\No}{\ifmmode{\nfss@text{\textnumero}}\else\textnumero\fi}
+
+  % \CourseWorkTaskChairName{Общенаучных и специальных дисциплин}
+  % \CourseWorkTaskCourseName{Стратегии коммерциализации инноваций}
+
+  % \CourseWorkTaskAdviser{К. С. Моренко}
+
+  % \CourseWorkDeadLine{25}{мая}{18}
+
+  % \ChairTaskCourseWorkData{учебники, учебные пособия, научные книги и
+  %   статьи по теме курсовой работы, материалы сети Интернет}
+
+  % \ChairWorkSigned{15}{февраля}{18}
+
+  \begin{document}
+
+  \ESKDstyle{empty}
+
+  \newgeometry{left=3cm, right=1.5cm, top=1cm, bottom=1cm}
+
+  % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % %% Common
+
+  \CWheader{ФЕДЕРАЛЬНОЕ АГЕНТСТВО НАУЧНЫХ ОРГАНИЗАЦИЙ \\
+  ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ НАУЧНОЕ УЧРЕЖДЕНИЕ \\
+  <<ФЕДЕРАЛЬНЫЙ НАУЧНЫЙ АГРОИНЖЕНЕРНЫЙ ЦЕНТР ВИМ>> \\
+  (ФГБНУ ФНАЦ ВИМ)}
+
+  \CWmaterials{Общие материалы для всех тем}
+  % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % %% Захаров
+
+  % \CourseWorkTaskAuthor{Ю. Ю. Захаров}{Захарова Юрия Юрьевича}
+
+  % %% \BAKhuman{author}{nom}{Захаров}{Ю. Ю.}{}{}
+
+  % \ChairTaskCourseWorkTitle{Основы организации производства инновационной продукции}
+
+  % \ChairTaskCourseWorkContent{1. Организация производства.  2. Выбор
+  %   инновационной стратегии.  3. Технико-экономическая оценка
+  %   выпускаемой продукции}
+
+  % \CourseWorkTaskMake
+
+  % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % %% Баранов
+
+  % \CourseWorkTaskAuthor{А. Ю. Баранов}{Баранова Алексея Юрьевича}
+
+  % \ChairTaskCourseWorkTitle{Технико-экономический расчет производства
+  %   блока бесперебойного питания}
+
+  % \ChairTaskCourseWorkContent{1. Оценка рынка.  2. Оборудование,
+  %   материалы и персонал для производства.  3. Технико-экономическая
+  %   оценка продукции}
+
+  % \CourseWorkTaskMake
+
+  \begin{CWtask}
+    \author{П. Автор}{Первый автор}
+    \title{Тема работы №1}
+    \materials{Материалы для работы №1}
+  \end{CWtask}
+
+  \begin{CWtask}
+    \author{В. Автор}{Второй автор}
+    \title{Тема работы №2}
+  \end{CWtask}
+
+  \end{document}
+#+END_SRC
