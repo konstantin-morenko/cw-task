@@ -1,3 +1,43 @@
+Разрешение обработки Makefile внутри org
+
+#+begin_src elisp
+  (require 'ob-makefile)
+#+end_src
+
+Нужно экспортировать файлы с помощью src_elisp{(org-babel-tangle)}
+
+* Makefile
+
+#+begin_src makefile :tangle Makefile
+  PACKAGE_NAME = course-task
+  ORG_FILE = $(PACKAGE_NAME).org
+  TEST_NAME = test
+  ARCHIVE_FILES = Makefile course-work-task.sty test.tex
+
+  $(TEST_NAME).pdf: $(TEST_NAME).tex $(PACKAGE_NAME).sty $(BUILD_DIR)
+	  pdflatex $(TEST_NAME).tex
+
+  $(PACKAGE_NAME).sty $(TEST_NAME).tex environment.tex commands.tex: $(PACKAGE_NAME).org $(BUILD_DIR)
+	  emacs --script org-tangle.el "$(ORG_FILE)"
+
+  $(PACKAGE_NAME).zip: $(ARCHIVE_FILES)
+	  zip $(PACKAGE_NAME).zip $(ARCHIVE_FILES)
+
+  install-packages:
+	  sudo apt-get install -y texlive-base texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-cyrillic texlive-bibtex-extra
+#+end_src
+
+** DONE Makefile itself
+
+#+begin_src makefile :tangle Makefile
+  Makefile: $(ORG_FILE)
+	  emacs --batch --exec "(progn (find-file \"$(ORG_FILE)\") (org-babel-tangle nil nil makefile))"
+#+end_src
+
+
+
+** Требуемые пакеты
+
 * Новая версия
   :PROPERTIES:
   :header-args:latex: :tangle course-task.sty
@@ -38,11 +78,17 @@
   \newenvironment{CWtask}{
 #+END_SRC
 
+Параметры имеют три уровня значений (по возрастанию приоритетов):
+- значение по умолчанию
+- общее значение
+- значение в окружении
+
+
 - [ ] Работа с датами
   - [ ] Формат дат: \@date<type>[part]
     - <type>:
       - iss :: дата выдачи задания
-      - final :: срок сдачи работы
+      - end :: срок сдачи работы
     - [part]:
       - day :: день месяца
       - month :: месяц
@@ -53,7 +99,7 @@
       - [ ] Локальную
     - [ ] Напечатать дату (локальную)
 
-- Общие параметры бланков
+*** Общие параметры бланков
   - Заголовок
     - общий параметр ~\@CWheader~
       #+BEGIN_SRC latex :tangle commands.tex
@@ -89,28 +135,21 @@
         \newcommand{\@enddatemonth}{\@CWenddatemonth}
         \newcommand{\@enddateyear}{\@CWenddateyear}
       #+END_SRC
-- Частные параметры бланков
-  - Данные для выполнения работы
-    - общий параметр: ~\CW@materials~
-      #+BEGIN_SRC latex :tangle commands.tex
-        \newcommand{\@CWmaterials}{CWmaterials}
-      #+END_SRC
-    - общая команда: ~\CWmaterials{materials}~
-      #+BEGIN_SRC latex :tangle commands.tex
-        \newcommand{\CWmaterials}[1]{%
-          \renewcommand{\@CWmaterials}{#1}%
-        }
-      #+END_SRC
-    - параметр в окружении (наследует): ~\@materials~
-      #+BEGIN_SRC latex :tangle environment.tex
-        \newcommand{\@materials}{\@CWmaterials}
-      #+END_SRC
-    - команда в окружении: ~\materials{materials}~
-      #+BEGIN_SRC latex :tangle environment.tex
-        \newcommand{\materials}[1]{
-          \renewcommand\@materials{##1}
-        }
-      #+END_SRC
+
+**** DONE Заголовок задания
+
+- Общий параметр
+  #+BEGIN_SRC latex :tangle commands.tex
+    \newcommand{\@CWname}{ЗАДАНИЕ НА КУРСОВУЮ РАБОТУ}%
+  #+END_SRC
+- Общая команда
+  #+BEGIN_SRC latex :tangle commands.tex
+    \newcommand{\CWname}[1]{%
+      \renewcommand{\@CWname}{#1}%
+    }
+  #+END_SRC
+
+*** Частные параметры бланков
   - Дата выдачи ~\CWissdate{date}~, ~\issdate{date}~
     - общие даты: ~\@CWissdateday~, ~\@CWissdatemonth~,
       ~\@CWissdateyear~
@@ -143,7 +182,31 @@
         }
       #+END_SRC
   - [ ] Фамилия, имя, отчество руководителя (общие и в окружении) ~\CWadviser{surname}{initials}~, ~\adviser{surname}{initials}~
-- Индивидуальные параметры
+
+**** DONE Данные для выполнения работы
+
+- Общий параметр:
+  #+BEGIN_SRC latex :tangle commands.tex
+    \newcommand{\@CWmaterials}{данные для выполнения работы}
+  #+END_SRC
+- Общая команда:
+  #+BEGIN_SRC latex :tangle commands.tex
+    \newcommand{\CWmaterials}[1]{%
+      \renewcommand{\@CWmaterials}{#1}%
+    }
+  #+END_SRC
+- Параметр в окружении (наследует):
+  #+BEGIN_SRC latex :tangle environment.tex
+    \newcommand{\@materials}{\@CWmaterials}
+  #+END_SRC
+- Команда в окружении:
+  #+BEGIN_SRC latex :tangle environment.tex
+    \newcommand{\materials}[1]{
+      \renewcommand\@materials{##1}
+    }
+  #+END_SRC
+
+*** Индивидуальные параметры
   - Фамилия, имя, отчество студента
     - параметры в окружении: ~\@authorsign~, ~\@authorfull~
       #+BEGIN_SRC latex :tangle environment.tex
@@ -182,10 +245,6 @@
         }
       #+END_SRC
 
-Параметры имеют три уровня значений (по возрастанию приоритетов):
-- значение по умолчанию
-- общее значение
-- значение в окружении
 
 ** TODO Формирование бланка
 
@@ -236,7 +295,7 @@
 
 #+BEGIN_SRC latex :tangle environment.tex
     \begin{center}
-      ЗАДАНИЕ НА КУРСОВУЮ РАБОТУ \\
+      \@CWname \\
       \sl{\@authorfull}
     \end{center}
 #+END_SRC
@@ -323,6 +382,12 @@
 
   \ESKDstyle{empty}
   \newgeometry{left=3cm, right=1.5cm, top=1cm, bottom=1cm}
+
+  \begin{CWtask}
+    \author{П. Автор}{Первый автор}
+    \title{Все параметры по умолчанию}
+    \content{Содержание работы №1}
+  \end{CWtask}
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% Common
