@@ -1,2 +1,13 @@
 # Emacs backup
 *~
+
+# Package generated files
+*.sty
+*.zip
+
+# LaTeX generated files
+*.tex
+*.aux
+*.log
+*.pdf
+
