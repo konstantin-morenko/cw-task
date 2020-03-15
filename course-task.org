@@ -100,17 +100,27 @@
     - [ ] Напечатать дату (локальную)
 
 *** Общие параметры бланков
-  - Заголовок
-    - общий параметр ~\@CWheader~
-      #+BEGIN_SRC latex :tangle commands.tex
-        \newcommand{\@CWheader}{CWheader}%
-      #+END_SRC
-    - общая команда ~\CWheader{header}~
-      #+BEGIN_SRC latex :tangle commands.tex
-        \newcommand{\CWheader}[1]{%
-          \renewcommand{\@CWheader}{#1}%
-        }
-      #+END_SRC
+
+**** DONE Заголовок
+
+- Общий параметр
+  #+BEGIN_SRC latex :tangle commands.tex
+    \newcommand{\@CWheader}{}%
+  #+END_SRC
+
+- Общая команда
+  #+BEGIN_SRC latex :tangle commands.tex
+    \newcommand{\CWheader}[1]{%
+      \renewcommand{\@CWheader}{#1}%
+    }
+  #+END_SRC
+
+- Пример
+ #+BEGIN_SRC latex :tangle description.tex
+   \CWheader{CWheader(header)}
+ #+END_SRC
+
+**** Продолжение
   - Название кафедры ~\CWchair{chair}~
   - Название дисциплины ~\CWcourse{course}~
   - Срок сдачи ~\CWenddate{date}~
@@ -366,6 +376,16 @@
   }
 #+end_src
 
+** Описания команд
+
+#+begin_src latex :tangle description.tex
+  \begin{CWtask}
+    \author{П. Автор}{Первый автор}
+    \title{Все параметры по умолчанию}
+    \content{Содержание работы №1}
+  \end{CWtask}
+#+end_src
+
 ** Тестовый фрагмент
 
 #+BEGIN_SRC latex :tangle test.tex
@@ -383,11 +403,7 @@
   \ESKDstyle{empty}
   \newgeometry{left=3cm, right=1.5cm, top=1cm, bottom=1cm}
 
-  \begin{CWtask}
-    \author{П. Автор}{Первый автор}
-    \title{Все параметры по умолчанию}
-    \content{Содержание работы №1}
-  \end{CWtask}
+  \input{description.tex}
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% Common
